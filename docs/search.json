@@ -1,9 +1,65 @@
 [
   {
+    "objectID": "examples/add-dump-phreeqcpy.html",
+    "href": "examples/add-dump-phreeqcpy.html",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/add-dump-phreeqcpy.html#work-in-progress",
+    "href": "examples/add-dump-phreeqcpy.html#work-in-progress",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/linear-ion-exchange-kinetics.html",
+    "href": "examples/linear-ion-exchange-kinetics.html",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/linear-ion-exchange-kinetics.html#work-in-progress",
+    "href": "examples/linear-ion-exchange-kinetics.html#work-in-progress",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/phreeqc-in-python.html",
+    "href": "examples/phreeqc-in-python.html",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/phreeqc-in-python.html#work-in-progress",
+    "href": "examples/phreeqc-in-python.html#work-in-progress",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "HydroReact",
+    "title": "Advanced Hydrochemistry & Reactive Transport",
     "section": "",
-    "text": "Welcome to HydroReact."
+    "text": "Browse examples below for step-by-step examples.\nExamples presented here are considered advanced. For basic examples check hydrochemistry.eu\n\n\n\n\nUse of phreeqcpy package (Open)\nEnable DUMP instruction in phreeqcpy (Open)\n\n\n\n\n\nLinear ion-exchange kinetics (Open)"
+  },
+  {
+    "objectID": "index.html#phreeqc-setup-in-python",
+    "href": "index.html#phreeqc-setup-in-python",
+    "title": "Advanced Hydrochemistry & Reactive Transport",
+    "section": "",
+    "text": "Use of phreeqcpy package (Open)\nEnable DUMP instruction in phreeqcpy (Open)"
+  },
+  {
+    "objectID": "index.html#batch-modeling-with-phreeqc",
+    "href": "index.html#batch-modeling-with-phreeqc",
+    "title": "Advanced Hydrochemistry & Reactive Transport",
+    "section": "",
+    "text": "Linear ion-exchange kinetics (Open)"
   }
 ]
