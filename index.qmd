@@ -1,6 +1,19 @@
 ---
-title: "HydroReact"
+title: "Advanced Hydrochemistry & Reactive Transport"
+page-layout: article
+toc: true
+toc-depth: 2
 ---
 
-Welcome to **HydroReact**.
+# How to use this site
 
+- Browse **examples** below for step-by-step examples.
+- Examples presented here are considered advanced. For basic examples check hydrochemistry.eu
+
+## PHREEQC setup in Python
+1. Use of phreeqcpy package ([Open](examples/phreeqc-in-python.qmd))
+2. Enable DUMP instruction in phreeqcpy ([Open](examples/add-dump-phreeqcpy.qmd))
+
+
+## Batch modeling with PHREEQC
+1. Linear ion-exchange kinetics ([Open](examples/linear-ion-exchange-kinetics.qmd))
