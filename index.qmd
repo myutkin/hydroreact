@@ -8,7 +8,7 @@ toc-depth: 2
 # How to use this site
 
 - Browse **examples** below for step-by-step examples.
-- Examples presented here are considered advanced. For basic examples check hydrochemistry.eu
+- Examples presented here are considered advanced (i.e. you cannot simply copy-paste them). For basic examples check hydrochemistry.eu
 
 ## PHREEQC setup in Python
 1. Use of phreeqcpy package ([Open](examples/phreeqc-in-python.qmd))
@@ -17,3 +17,9 @@ toc-depth: 2
 
 ## Batch modeling with PHREEQC
 1. Linear ion-exchange kinetics ([Open](examples/linear-ion-exchange-kinetics.qmd))
+2. Mass-transfer limited linear ion-exchange kinetics ([Open](examples/mass-transfer-linear-ion-exchange-kinetics.qmd))
+3. Non-linear ion-exchange kinetics ([Open](examples/non-linear-ion-exchange-kinetics.qmd))
+4. Mass-transfer limited non-linear ion-exchange kinetics ([Open](examples/mass-transfer-non-linear-ion-exchange-kinetics.qmd))
+
+## Transport modeling with PHREEQC
+1. Tracer breakthrough modeling and validation  ([Open](examples/tracer-breakthrough.qmd))

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Kinetics of 1:1 Ion Exchange – HydroReact</title>
+<title>Page not yet implemented – HydroReact</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -69,35 +69,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -144,11 +115,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#short-theory" id="toc-short-theory" class="nav-link active" data-scroll-target="#short-theory">Short theory</a></li>
-  <li><a href="#exponential-decay" id="toc-exponential-decay" class="nav-link" data-scroll-target="#exponential-decay">1. Exponential decay</a></li>
-  <li><a href="#small-deviation-from-a-reference-equilibrium-state" id="toc-small-deviation-from-a-reference-equilibrium-state" class="nav-link" data-scroll-target="#small-deviation-from-a-reference-equilibrium-state">2. Small deviation from a reference equilibrium state</a></li>
-  <li><a href="#full-kinetic-expression" id="toc-full-kinetic-expression" class="nav-link" data-scroll-target="#full-kinetic-expression">3. Full kinetic expression</a></li>
-  <li><a href="#comparison-of-the-three-cases" id="toc-comparison-of-the-three-cases" class="nav-link" data-scroll-target="#comparison-of-the-three-cases">Comparison of the three cases</a></li>
+  <li><a href="#page-not-yet-implemented" id="toc-page-not-yet-implemented" class="nav-link active" data-scroll-target="#page-not-yet-implemented">Page not yet implemented</a>
+  <ul class="collapse">
+  <li><a href="#work-in-progress" id="toc-work-in-progress" class="nav-link" data-scroll-target="#work-in-progress">Work in progress</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -157,7 +127,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Kinetics of 1:1 Ion Exchange</h1>
+<h1 class="title">Page not yet implemented</h1>
 </div>
 
 
@@ -174,170 +144,15 @@ window.Quarto = {
 </header>
 
 
-<section id="short-theory" class="level1">
-<h1>Short theory</h1>
-<p>Let’s start by considering the following ion exchange equation: <span class="math display">\[
-\ce{&gt;S-Na + Li+ &lt;--&gt;[K_{ex}] &gt;S-Li + Na+}
-\]</span></p>
-<p>for this equation <span class="math inline">\(K_{\text{ex}} = [S_{\ce{Li}}][C_{\ce{Na+}}] / [S_{\ce{Na}}][C_{\ce{Li+}}]\)</span>, where <span class="math inline">\(S\)</span> denotes surface concentrations in mol/kgw and <span class="math inline">\(C\)</span> denotes bulk concentrations in mol/kgw. In such formulation equilibrium constant is dimensionless, which is convenient.</p>
-<p>To formulate Basic program in PHREEQC for kinetics we seek an expression of the form: <span class="math inline">\(\text{rate} = dS_{\ce{Na}}/dt = k_r (K^{\prime} C_{\ce{Na+}} - S_{\ce{Na}})\)</span>, where <span class="math inline">\(K^{\prime}\)</span> is not necessarily equal to <span class="math inline">\(K_{\text{ex}}\)</span>, and <span class="math inline">\(k_r\)</span> is a rate constant in m/s. We also note that lithium exchange rate is equal and opposite in sign. We now consider three ways of obtaining such an expression.</p>
+<section id="page-not-yet-implemented" class="level1">
+<h1>Page not yet implemented</h1>
+<section id="work-in-progress" class="level2">
+<h2 class="anchored" data-anchor-id="work-in-progress">Work in progress</h2>
+<p>This page is planned but not implemented yet.</p>
+<p>If you reached this page via a link, it means the example is on the roadmap but not ready yet.</p>
+
+
 </section>
-<section id="exponential-decay" class="level1">
-<h1>1. Exponential decay</h1>
-<p>We start with exponential decay because it is the easiest way and is described in hydrochemistry.eu, and we also get to pick sign convention in PHREEQC for kinetics expressions.</p>
-<p>In this formulation <span class="math inline">\(\text{rate} = k_r (S^e_{\ce{Na}} - S_{\ce{Na}})\)</span>. Once the equilibrium state is known, computation of the rate is straight forward.</p>
-<p>Here is a simple example slightly modified from hydrochemistry.eu:</p>
-<pre class="text"><code>SELECTED_OUTPUT 1
--reset true
--kinetic_reactants kin_exch_na kin_exch_li
-
-RATES
- kin_exch_na
-# kinetic exchange: d(q_Na)/dt = k * (q_Na_eq - q_Na)
-# q_Na_eq is equilibrium exchangeable Na 
--start
- 10 q_Na_eq = {S_Na_eq}
- 20 q_Na = m
- 30 dq_Na = 100 * (q_Na_eq - q_Na) * time
- 40 save -dq_Na
--end
-
- kin_exch_li
-# kinetic exchange: d(q_K)/dt = k * (q_K_eq - q_K)
--start
- 10 q_Li_eq = {S_Li_eq}
- 20 q_Li = m
- 30 dq_Li = 100 * (q_Li_eq - q_Li) * time
- 40 save -dq_Li
--end
-
-KINETICS 1
- kin_exch_na;  -formula Na 1.0
- m0 0.55e-3
- 
- kin_exch_li;  -formula Li 1.0
- m0 0.55e-3</code></pre>
-<p>Note the sign convention when saving moles in <code>RATE</code> and in formula for <code>KINETICS</code>.</p>
-</section>
-<section id="small-deviation-from-a-reference-equilibrium-state" class="level1">
-<h1>2. Small deviation from a reference equilibrium state</h1>
-<p>If we now incorporate mass and charge balance in the equilibrium exchange constant expression, such that <span class="math inline">\(CEC = S_{\ce{Na}} + S_{\ce{Li}}\)</span> and <span class="math inline">\(C_{\ce{Cl-}} = C_{\ce{Na+}} + C_{\ce{Li+}}\)</span>, we obtain an expression of <span class="math inline">\([S_\ce{Li}(Li)]\)</span> (yes, I switched to lithium here, but it does not matter) that we hope to have in the form suitable for our <code>RATES</code> law.</p>
-<p><span class="math display">\[
-[S_\ce{Li}(Li)] = \cfrac{K_{\text{ex}}C_{\ce{Li+}} CEC}{C_{\ce{Cl-}} + (K_{\text{ex}} - 1)C_{\ce{Li+}}}
-\]</span></p>
-<p>The slope of the tangent at a reference state (0) is given by <span class="math inline">\(dS/dt = K C_{\ce{Cl-}}CEC / (C_{\ce{Cl-}} + (K - 1)C_{\ce{Li_0}})^2 \equiv K^{\prime}\)</span>. Small deviations from the reference state are linear such that <span class="math inline">\(\Delta S_{\ce{Li}} \approx K^{\prime}\Delta C_{\ce{Li+}}\)</span>. We thus can write <code>RATES</code> Basic program.</p>
-<pre class="text"><code>RATES
-Li_Na_lin_exch
--start
-  10 CEC_tot   = {CEC}
-  20 logK_LiX  = {log_KLi}
-  30 Li0       = {Li_ref}
-  40 S_Li0     = {s_Li_ref}
-  50 k_r       = {k_r}
-  60 S_Li = m
-  70 Li         = MOL("Li+")
-  80 Cl_tot     = TOT("Cl")
-  90 K_GT       = 10^logK_LiX
- 100 denom      = Cl_tot + (K_GT - 1.0)*Li0
- 110 IF (denom &lt;= 0) THEN denom = 1E-30
- 120 K_loc  = K_GT * CEC_tot * Cl_tot / (denom * denom)
- 130 dLi   = Li   - Li0
- 140 dS_Li = S_Li - S_Li0
- 150 dS_Li_eq = K_loc * dLi
- 160 rate_S_Li = k_r * (dS_Li_eq - dS_Li)
- 170 moles = rate_S_Li * TIME
- 180 SAVE -moles
--end
-
-KINETICS 1
-Li_Na_lin_exch
- -formula Li+ 1 Na+ -1   
- -m      {s_Li_init}  </code></pre>
-<p>There are two important caveats: 1) this rate law is valid only at small deviations from the reference state; 2) this rate law assumes that we are at the same adsorption isotherm (i.e.&nbsp;<span class="math inline">\(C_{\ce{Cl-}}\)</span> is constant and the same at the reference state and the new state).</p>
-<p>Also, note that the always dimensionless equilibrium exchange constant used by PHREEQC (i.e.&nbsp;Gaines-Thomas convention) in the linear case equal to the equilibrium exchange constant I used. This will not be the case for a non-linear ion exchange, which is considered (<a href="../examples/non-linear-ion-exchange-kinetics.html">here</a>).</p>
-<p>While such a rate is rather limited, it is easy and fast to compute (i.e.&nbsp;it has closed form solution or would require a simple and efficient itegrator) and thus lookup tables can be pre-generated for it easily when solving chemistry on large grids. The same conclusion applies to the first considered rate law.</p>
-</section>
-<section id="full-kinetic-expression" class="level1">
-<h1>3. Full kinetic expression</h1>
-<p>Finally, we could use full rate expression obtaind directly from the equilibrium exchange constant. Again we seek an expression of the form <span class="math inline">\(\text{rate} = dS_{\ce{Li}}/dt = k_r (K^{\prime} C_{\ce{Li+}} - S_{\ce{Li}})\)</span>. From the equilibrium constant we obtain:</p>
-<p><span class="math display">\[
-K^{\prime} = \cfrac{K_{\text{ex}} CEC}{(C_{\ce{Cl-}} + (K_{\text{ex}} - 1)C_{\ce{Li+}})}
-\]</span></p>
-<p>Then the <code>RATES</code> program is as follows.</p>
-<pre class="text"><code>SELECTED_OUTPUT 1
--reset true
--kinetic_reactants Li_Na_lin_exch 
-
-RATES
-Li_Na_lin_exch
--start
- 10 CEC = {CEC}
- 20 K = {10**log_KLi}
- 140 K_prime = K * CEC/(MOL("Cl-") + (K-1)*(MOL("Cl-") - MOL("Na+")))
- 150 driver = (K_prime * MOL("Li+") - m)
- 160 rate = {k_r} * driver
- 170 moles = rate * TIME
- 180 save -moles
--end
-
-KINETICS 1
-Li_Na_lin_exch
- -formula Li+ 1 Na+ -1   
- -m      {s_Li_init}  
- -cvode true</code></pre>
-<p>The important caveat here is that we used equilibrium constant expression to obtain expression for <span class="math inline">\(K^{\prime}\)</span>, but we use actual ionic concentrations, not equilibrium. In other words, numerically we are not integrating towards a constant or linear target, we are integrating toward a moving target, which is dependent on state.</p>
-</section>
-<section id="comparison-of-the-three-cases" class="level1">
-<h1>Comparison of the three cases</h1>
-<p>So, now it would make sense to compare performance of these rate laws using PHREEQC. However, there is one complication. PHREEQc actually uses activities instead of concentrations and above rate expressions are based on charge balance tied to <span class="math inline">\(C_{\ce{Cl-}}\)</span> molar concentration. Thus, above expressions have to be rederived in terms of activities. This excersize is left to the reader.</p>
-<p>Below I compare the above three rate laws for the small equilibrium deviation along a constant adsorption isotherm, and for large deviations from equilibrium and isotherm jumping. All rates are computed in terms of activities.</p>
-<p><a href="#fig-case1" class="quarto-xref">Figure&nbsp;1</a> compares the three rates at small equilibrium deviation on the same isotherm. All rates law perform very well. The performance of the small deviation rate law is very good.</p>
-<div id="fig-case1" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-case1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/Small_deviation_constant_isotherm.png" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-case1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Cl-}}\)</span> = <span class="math inline">\(C_{\ce{Cl-}}\)</span> = 0.2 mol/kgw, <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.11 mol/kgw. Lithium concentration is obtained from charge balance.
-</figcaption>
-</figure>
-</div>
-<p><a href="#fig-case2" class="quarto-xref">Figure&nbsp;2</a> compares the three rates at large equilibrium deviation on the same isotherm. The performance of the small deviation rate law is poor, it under estimates desorption because it esentially decays to a notably different equilibrium state. The other rate laws perform well although are distinct.</p>
-<div id="fig-case2" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-case2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/Large_deviation_constant_isotherm.png" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-case2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Cl-}}\)</span> = <span class="math inline">\(C_{\ce{Cl-}}\)</span> = 0.2 mol/kgw, <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.15 mol/kgw. Lithium concentration is obtained from charge balance.
-</figcaption>
-</figure>
-</div>
-<p><a href="#fig-case3" class="quarto-xref">Figure&nbsp;3</a> compares the three rates at small jump to a different isotherm. The small deviation rate law is off by a huge margin. It severely over estimates desorption. The other rate laws perform well, and are indistinguishable.</p>
-<div id="fig-case3" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-case3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/Small_deviation_different_isotherm.png" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-case3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Li+}}\)</span> = 1 mol/kgw, <span class="math inline">\(C_{\ce{Li+}}\)</span> = 0.9 mol/kgw, Chloride concentration is obtained from charge balance.
-</figcaption>
-</figure>
-</div>
-<p><a href="#fig-case4" class="quarto-xref">Figure&nbsp;4</a> compares the three rates at large jump to a different isotherm. The performance picture did not change much from the previous example. The small deviation law is off, the isotherm change is catastrophic for its performance. The other rate laws produce the same results. This, however, does not imply they are the same law. They are simply equal at the chosen test conditions.</p>
-<div id="fig-case4" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-case4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/Large_deviation_different_isotherm.png" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-case4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Li+}}\)</span> = 1 mol/kgw, <span class="math inline">\(C_{\ce{Li+}}\)</span> = 0.5 mol/kgw, Chloride concentration is obtained from charge balance.
-</figcaption>
-</figure>
-</div>
-<p>If you require the above rate expressions in activities, my contact details are in this <a href="../about.html">page</a>.</p>
-
-
 </section>
 
 </main> <!-- /main -->

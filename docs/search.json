@@ -21,15 +21,15 @@
     "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
   },
   {
-    "objectID": "examples/linear-ion-exchange-kinetics.html",
-    "href": "examples/linear-ion-exchange-kinetics.html",
+    "objectID": "examples/mass-transfer-non-linear-ion-exchange-kinetics.html",
+    "href": "examples/mass-transfer-non-linear-ion-exchange-kinetics.html",
     "title": "Page not yet implemented",
     "section": "",
     "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
   },
   {
-    "objectID": "examples/linear-ion-exchange-kinetics.html#work-in-progress",
-    "href": "examples/linear-ion-exchange-kinetics.html#work-in-progress",
+    "objectID": "examples/mass-transfer-non-linear-ion-exchange-kinetics.html#work-in-progress",
+    "href": "examples/mass-transfer-non-linear-ion-exchange-kinetics.html#work-in-progress",
     "title": "Page not yet implemented",
     "section": "",
     "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
@@ -49,11 +49,60 @@
     "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
   },
   {
+    "objectID": "examples/linear-ion-exchange-kinetics.html",
+    "href": "examples/linear-ion-exchange-kinetics.html",
+    "title": "Kinetics of 1:1 Ion Exchange",
+    "section": "",
+    "text": "Short theory\nLet’s start by considering the following ion exchange equation: \\[\n\\ce{&gt;S-Na + Li+ &lt;--&gt;[K_{ex}] &gt;S-Li + Na+}\n\\]\nfor this equation \\(K_{\\text{ex}} = [S_{\\ce{Li}}][C_{\\ce{Na+}}] / [S_{\\ce{Na}}][C_{\\ce{Li+}}]\\), where \\(S\\) denotes surface concentrations in mol/kgw and \\(C\\) denotes bulk concentrations in mol/kgw. In such formulation equilibrium constant is dimensionless, which is convenient.\nTo formulate Basic program in PHREEQC for kinetics we seek an expression of the form: \\(\\text{rate} = dS_{\\ce{Na}}/dt = k_r (K^{\\prime} C_{\\ce{Na+}} - S_{\\ce{Na}})\\), where \\(K^{\\prime}\\) is not necessarily equal to \\(K_{\\text{ex}}\\), and \\(k_r\\) is a rate constant in m/s. We also note that lithium exchange rate is equal and opposite in sign. We now consider three ways of obtaining such an expression.\n\n\n1. Exponential decay\nWe start with exponential decay because it is the easiest way and is described in hydrochemistry.eu, and we also get to pick sign convention in PHREEQC for kinetics expressions.\nIn this formulation \\(\\text{rate} = k_r (S^e_{\\ce{Na}} - S_{\\ce{Na}})\\). Once the equilibrium state is known, computation of the rate is straight forward.\nHere is a simple example slightly modified from hydrochemistry.eu:\nSELECTED_OUTPUT 1\n-reset true\n-kinetic_reactants kin_exch_na kin_exch_li\n\nRATES\n kin_exch_na\n# kinetic exchange: d(q_Na)/dt = k * (q_Na_eq - q_Na)\n# q_Na_eq is equilibrium exchangeable Na \n-start\n 10 q_Na_eq = {S_Na_eq}\n 20 q_Na = m\n 30 dq_Na = 100 * (q_Na_eq - q_Na) * time\n 40 save -dq_Na\n-end\n\n kin_exch_li\n# kinetic exchange: d(q_K)/dt = k * (q_K_eq - q_K)\n-start\n 10 q_Li_eq = {S_Li_eq}\n 20 q_Li = m\n 30 dq_Li = 100 * (q_Li_eq - q_Li) * time\n 40 save -dq_Li\n-end\n\nKINETICS 1\n kin_exch_na;  -formula Na 1.0\n m0 0.55e-3\n \n kin_exch_li;  -formula Li 1.0\n m0 0.55e-3\nNote the sign convention when saving moles in RATE and in formula for KINETICS.\n\n\n2. Small deviation from a reference equilibrium state\nIf we now incorporate mass and charge balance in the equilibrium exchange constant expression, such that \\(CEC = S_{\\ce{Na}} + S_{\\ce{Li}}\\) and \\(C_{\\ce{Cl-}} = C_{\\ce{Na+}} + C_{\\ce{Li+}}\\), we obtain an expression of \\([S_\\ce{Li}(Li)]\\) (yes, I switched to lithium here, but it does not matter) that we hope to have in the form suitable for our RATES law.\n\\[\n[S_\\ce{Li}(Li)] = \\cfrac{K_{\\text{ex}}C_{\\ce{Li+}} CEC}{C_{\\ce{Cl-}} + (K_{\\text{ex}} - 1)C_{\\ce{Li+}}}\n\\]\nThe slope of the tangent at a reference state (0) is given by \\(dS/dt = K C_{\\ce{Cl-}}CEC / (C_{\\ce{Cl-}} + (K - 1)C_{\\ce{Li_0}})^2 \\equiv K^{\\prime}\\). Small deviations from the reference state are linear such that \\(\\Delta S_{\\ce{Li}} \\approx K^{\\prime}\\Delta C_{\\ce{Li+}}\\). We thus can write RATES Basic program.\nRATES\nLi_Na_lin_exch\n-start\n  10 CEC_tot   = {CEC}\n  20 logK_LiX  = {log_KLi}\n  30 Li0       = {Li_ref}\n  40 S_Li0     = {s_Li_ref}\n  50 k_r       = {k_r}\n  60 S_Li = m\n  70 Li         = MOL(\"Li+\")\n  80 Cl_tot     = TOT(\"Cl\")\n  90 K_GT       = 10^logK_LiX\n 100 denom      = Cl_tot + (K_GT - 1.0)*Li0\n 110 IF (denom &lt;= 0) THEN denom = 1E-30\n 120 K_loc  = K_GT * CEC_tot * Cl_tot / (denom * denom)\n 130 dLi   = Li   - Li0\n 140 dS_Li = S_Li - S_Li0\n 150 dS_Li_eq = K_loc * dLi\n 160 rate_S_Li = k_r * (dS_Li_eq - dS_Li)\n 170 moles = rate_S_Li * TIME\n 180 SAVE -moles\n-end\n\nKINETICS 1\nLi_Na_lin_exch\n -formula Li+ 1 Na+ -1   \n -m      {s_Li_init}  \nThere are two important caveats: 1) this rate law is valid only at small deviations from the reference state; 2) this rate law assumes that we are at the same adsorption isotherm (i.e. \\(C_{\\ce{Cl-}}\\) is constant and the same at the reference state and the new state).\nAlso, note that the always dimensionless equilibrium exchange constant used by PHREEQC (i.e. Gaines-Thomas convention) in the linear case equal to the equilibrium exchange constant I used. This will not be the case for a non-linear ion exchange, which is considered (here).\nWhile such a rate is rather limited, it is easy and fast to compute (i.e. it has closed form solution or would require a simple and efficient itegrator) and thus lookup tables can be pre-generated for it easily when solving chemistry on large grids. The same conclusion applies to the first considered rate law.\n\n\n3. Full kinetic expression\nFinally, we could use full rate expression obtaind directly from the equilibrium exchange constant. Again we seek an expression of the form \\(\\text{rate} = dS_{\\ce{Li}}/dt = k_r (K^{\\prime} C_{\\ce{Li+}} - S_{\\ce{Li}})\\). From the equilibrium constant we obtain:\n\\[\nK^{\\prime} = \\cfrac{K_{\\text{ex}} CEC}{(C_{\\ce{Cl-}} + (K_{\\text{ex}} - 1)C_{\\ce{Li+}})}\n\\]\nThen the RATES program is as follows.\nSELECTED_OUTPUT 1\n-reset true\n-kinetic_reactants Li_Na_lin_exch \n\nRATES\nLi_Na_lin_exch\n-start\n 10 CEC = {CEC}\n 20 K = {10**log_KLi}\n 140 K_prime = K * CEC/(MOL(\"Cl-\") + (K-1)*(MOL(\"Cl-\") - MOL(\"Na+\")))\n 150 driver = (K_prime * MOL(\"Li+\") - m)\n 160 rate = {k_r} * driver\n 170 moles = rate * TIME\n 180 save -moles\n-end\n\nKINETICS 1\nLi_Na_lin_exch\n -formula Li+ 1 Na+ -1   \n -m      {s_Li_init}  \n -cvode true\nThe important caveat here is that we used equilibrium constant expression to obtain expression for \\(K^{\\prime}\\), but we use actual ionic concentrations, not equilibrium. In other words, numerically we are not integrating towards a constant or linear target, we are integrating toward a moving target, which is dependent on state.\n\n\nComparison of the three cases\nSo, now it would make sense to compare performance of these rate laws using PHREEQC. However, there is one complication. PHREEQc actually uses activities instead of concentrations and above rate expressions are based on charge balance tied to \\(C_{\\ce{Cl-}}\\) molar concentration. Thus, above expressions have to be rederived in terms of activities. This excersize is left to the reader.\nBelow I compare the above three rate laws for the small equilibrium deviation along a constant adsorption isotherm, and for large deviations from equilibrium and isotherm jumping. All rates are computed in terms of activities.\nFigure 1 compares the three rates at small equilibrium deviation on the same isotherm. All rates law perform very well. The performance of the small deviation rate law is very good.\n\n\n\n\n\n\nFigure 1: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. \\(\\text{log}_{10}(K_{\\text{ex}})\\) = 0.2, \\(CEC\\) = 0.05 mol/kgw, \\(k_r\\) = 0.1 m/s, \\(C^0_{\\ce{Na+}}\\) = 0.1 mol/kgw, \\(C^0_{\\ce{Cl-}}\\) = \\(C_{\\ce{Cl-}}\\) = 0.2 mol/kgw, \\(C_{\\ce{Na+}}\\) = 0.11 mol/kgw. Lithium concentration is obtained from charge balance.\n\n\n\nFigure 2 compares the three rates at large equilibrium deviation on the same isotherm. The performance of the small deviation rate law is poor, it under estimates desorption because it esentially decays to a notably different equilibrium state. The other rate laws perform well although are distinct.\n\n\n\n\n\n\nFigure 2: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. \\(\\text{log}_{10}(K_{\\text{ex}})\\) = 0.2, \\(CEC\\) = 0.05 mol/kgw, \\(k_r\\) = 0.1 m/s, \\(C^0_{\\ce{Na+}}\\) = 0.1 mol/kgw, \\(C^0_{\\ce{Cl-}}\\) = \\(C_{\\ce{Cl-}}\\) = 0.2 mol/kgw, \\(C_{\\ce{Na+}}\\) = 0.15 mol/kgw. Lithium concentration is obtained from charge balance.\n\n\n\nFigure 3 compares the three rates at small jump to a different isotherm. The small deviation rate law is off by a huge margin. It severely over estimates desorption. The other rate laws perform well, and are indistinguishable.\n\n\n\n\n\n\nFigure 3: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. \\(\\text{log}_{10}(K_{\\text{ex}})\\) = 0.2, \\(CEC\\) = 0.05 mol/kgw, \\(k_r\\) = 0.1 m/s, \\(C^0_{\\ce{Na+}}\\) = \\(C_{\\ce{Na+}}\\) = 0.1 mol/kgw, \\(C^0_{\\ce{Li+}}\\) = 1 mol/kgw, \\(C_{\\ce{Li+}}\\) = 0.9 mol/kgw, Chloride concentration is obtained from charge balance.\n\n\n\nFigure 4 compares the three rates at large jump to a different isotherm. The performance picture did not change much from the previous example. The small deviation law is off, the isotherm change is catastrophic for its performance. The other rate laws produce the same results. This, however, does not imply they are the same law. They are simply equal at the chosen test conditions.\n\n\n\n\n\n\nFigure 4: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. \\(\\text{log}_{10}(K_{\\text{ex}})\\) = 0.2, \\(CEC\\) = 0.05 mol/kgw, \\(k_r\\) = 0.1 m/s, \\(C^0_{\\ce{Na+}}\\) = \\(C_{\\ce{Na+}}\\) = 0.1 mol/kgw, \\(C^0_{\\ce{Li+}}\\) = 1 mol/kgw, \\(C_{\\ce{Li+}}\\) = 0.5 mol/kgw, Chloride concentration is obtained from charge balance.\n\n\n\nIf you require the above rate expressions in activities, my contact details are in this page."
+  },
+  {
+    "objectID": "examples/non-linear-ion-exchange-kinetics.html",
+    "href": "examples/non-linear-ion-exchange-kinetics.html",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/non-linear-ion-exchange-kinetics.html#work-in-progress",
+    "href": "examples/non-linear-ion-exchange-kinetics.html#work-in-progress",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/mass-transfer-linear-ion-exchange-kinetics.html",
+    "href": "examples/mass-transfer-linear-ion-exchange-kinetics.html",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/mass-transfer-linear-ion-exchange-kinetics.html#work-in-progress",
+    "href": "examples/mass-transfer-linear-ion-exchange-kinetics.html#work-in-progress",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/tracer-breakthrough.html",
+    "href": "examples/tracer-breakthrough.html",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
+    "objectID": "examples/tracer-breakthrough.html#work-in-progress",
+    "href": "examples/tracer-breakthrough.html#work-in-progress",
+    "title": "Page not yet implemented",
+    "section": "",
+    "text": "This page is planned but not implemented yet.\nIf you reached this page via a link, it means the example is on the roadmap but not ready yet."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Advanced Hydrochemistry & Reactive Transport",
     "section": "",
-    "text": "Browse examples below for step-by-step examples.\nExamples presented here are considered advanced. For basic examples check hydrochemistry.eu\n\n\n\n\nUse of phreeqcpy package (Open)\nEnable DUMP instruction in phreeqcpy (Open)\n\n\n\n\n\nLinear ion-exchange kinetics (Open)"
+    "text": "Browse examples below for step-by-step examples.\nExamples presented here are considered advanced (i.e. you cannot simply copy-paste them). For basic examples check hydrochemistry.eu\n\n\n\n\nUse of phreeqcpy package (Open)\nEnable DUMP instruction in phreeqcpy (Open)\n\n\n\n\n\nLinear ion-exchange kinetics (Open)\nMass-transfer limited linear ion-exchange kinetics (Open)\nNon-linear ion-exchange kinetics (Open)\nMass-transfer limited non-linear ion-exchange kinetics (Open)\n\n\n\n\n\nTracer breakthrough modeling and validation (Open)"
   },
   {
     "objectID": "index.html#phreeqc-setup-in-python",
@@ -67,6 +116,13 @@
     "href": "index.html#batch-modeling-with-phreeqc",
     "title": "Advanced Hydrochemistry & Reactive Transport",
     "section": "",
-    "text": "Linear ion-exchange kinetics (Open)"
+    "text": "Linear ion-exchange kinetics (Open)\nMass-transfer limited linear ion-exchange kinetics (Open)\nNon-linear ion-exchange kinetics (Open)\nMass-transfer limited non-linear ion-exchange kinetics (Open)"
+  },
+  {
+    "objectID": "index.html#transport-modeling-with-phreeqc",
+    "href": "index.html#transport-modeling-with-phreeqc",
+    "title": "Advanced Hydrochemistry & Reactive Transport",
+    "section": "",
+    "text": "Tracer breakthrough modeling and validation (Open)"
   }
 ]

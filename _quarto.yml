@@ -15,4 +15,8 @@ format:
   html:
     theme: cosmo
     toc: true
+    mathjax:
+      packages: ["base", "mhchem"]
+    fig-cap-location: bottom
+    fig-number: true
 
