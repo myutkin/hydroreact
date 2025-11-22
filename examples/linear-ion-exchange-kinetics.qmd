@@ -105,7 +105,7 @@ While such a rate is rather limited, it is easy and fast to compute (i.e. it has
 
 # 3. Full kinetic expression
 
-Finally, we could use full rate expression obtaind directly from the equilibrium exchange constant. Again we seek an expression of the form $\text{rate} = dS_{\ce{Li}}/dt = k_r (K^{\prime} C_{\ce{Li+}} - S_{\ce{Li}})$. From the equilibrium constant we obtain:
+Finally, we could use full rate expression obtained directly from the equilibrium exchange constant. Again we seek an expression of the form $\text{rate} = dS_{\ce{Li}}/dt = k_r (K^{\prime} C_{\ce{Li+}} - S_{\ce{Li}})$. From the equilibrium constant we obtain:
 
 $$
 K^{\prime} = \cfrac{K_{\text{ex}} CEC}{(C_{\ce{Cl-}} + (K_{\text{ex}} - 1)C_{\ce{Li+}})}
@@ -141,25 +141,25 @@ The important caveat here is that we used equilibrium constant expression to obt
 
 # Comparison of the three cases
 
-So, now it would make sense to compare performance of these rate laws using PHREEQC. However, there is one complication. PHREEQc actually uses activities instead of concentrations and above rate expressions are based on charge balance tied to $C_{\ce{Cl-}}$ molar concentration. Thus, above expressions have to be rederived in terms of activities. This excersize is left to the reader. 
+So, now it would make sense to compare performance of these rate laws using PHREEQC. However, there is one complication. PHREEQC actually uses activities instead of concentrations and above rate expressions are based on charge balance tied to $C_{\ce{Cl-}}$ molar concentration. Thus, above expressions have to be rederived in terms of activities. This exercise is left to the reader. 
 
 Below I compare the above three rate laws for the small equilibrium deviation along a constant adsorption isotherm, and for large deviations from equilibrium and isotherm jumping. All rates are computed in terms of activities.
 
 @fig-case1 compares the three rates at small equilibrium deviation on the same isotherm. All rates law perform very well. The performance of the small deviation rate law is very good.
 
-![Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. $\text{log}_{10}(K_{\text{ex}})$ = 0.2, $CEC$ = 0.05 mol/kgw, $k_r$ = 0.1 m/s, $C^0_{\ce{Na+}}$ = 0.1 mol/kgw, $C^0_{\ce{Cl-}}$ = $C_{\ce{Cl-}}$ = 0.2 mol/kgw, $C_{\ce{Na+}}$ = 0.11 mol/kgw. Lithium concentration is obtained from charge balance.](../images/Small_deviation_constant_isotherm.png){#fig-case1}
+![Comparison of three rate laws at small deviation from equilibrium on the same isotherm. $\text{log}_{10}(K_{\text{ex}})$ = 0.2, $CEC$ = 0.05 mol/kgw, $k_r$ = 0.1 m/s, $C^0_{\ce{Na+}}$ = 0.1 mol/kgw, $C^0_{\ce{Cl-}}$ = $C_{\ce{Cl-}}$ = 0.2 mol/kgw, $C_{\ce{Na+}}$ = 0.11 mol/kgw. Lithium concentration is obtained from charge balance.](../images/Small_deviation_constant_isotherm.png){#fig-case1}
 
-@fig-case2 compares the three rates at large equilibrium deviation on the same isotherm. The performance of the small deviation rate law is poor, it under estimates desorption because it esentially decays to a notably different equilibrium state. The other rate laws perform well although are distinct.
+@fig-case2 compares the three rates at large equilibrium deviation on the same isotherm. The performance of the small deviation rate law is poor, it under estimates desorption because it essentially decays to a notably different equilibrium state. The other rate laws perform well although are distinct.
 
-![Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. $\text{log}_{10}(K_{\text{ex}})$ = 0.2, $CEC$ = 0.05 mol/kgw, $k_r$ = 0.1 m/s, $C^0_{\ce{Na+}}$ = 0.1 mol/kgw, $C^0_{\ce{Cl-}}$ = $C_{\ce{Cl-}}$ = 0.2 mol/kgw, $C_{\ce{Na+}}$ = 0.15 mol/kgw. Lithium concentration is obtained from charge balance.](../images/Large_deviation_constant_isotherm.png){#fig-case2}
+![Comparison of three rate laws at large deviation from equilibrium on the same isotherm. $\text{log}_{10}(K_{\text{ex}})$ = 0.2, $CEC$ = 0.05 mol/kgw, $k_r$ = 0.1 m/s, $C^0_{\ce{Na+}}$ = 0.1 mol/kgw, $C^0_{\ce{Cl-}}$ = $C_{\ce{Cl-}}$ = 0.2 mol/kgw, $C_{\ce{Na+}}$ = 0.15 mol/kgw. Lithium concentration is obtained from charge balance.](../images/Large_deviation_constant_isotherm.png){#fig-case2}
 
 
 @fig-case3 compares the three rates at small jump to a different isotherm. The small deviation rate law is off by a huge margin. It severely over estimates desorption. The other rate laws perform well, and are indistinguishable.
 
-![Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. $\text{log}_{10}(K_{\text{ex}})$ = 0.2, $CEC$ = 0.05 mol/kgw, $k_r$ = 0.1 m/s, $C^0_{\ce{Na+}}$ = $C_{\ce{Na+}}$ = 0.1 mol/kgw, $C^0_{\ce{Li+}}$ = 1 mol/kgw, $C_{\ce{Li+}}$ = 0.9 mol/kgw, Chloride concentration is obtained from charge balance.](../images/Small_deviation_different_isotherm.png){#fig-case3}
+![Comparison of three rate laws at small jump to a different isotherm. $\text{log}_{10}(K_{\text{ex}})$ = 0.2, $CEC$ = 0.05 mol/kgw, $k_r$ = 0.1 m/s, $C^0_{\ce{Na+}}$ = $C_{\ce{Na+}}$ = 0.1 mol/kgw, $C^0_{\ce{Li+}}$ = 1 mol/kgw, $C_{\ce{Li+}}$ = 0.9 mol/kgw, Chloride concentration is obtained from charge balance.](../images/Small_deviation_different_isotherm.png){#fig-case3}
 
 @fig-case4 compares the three rates at large jump to a different isotherm. The performance picture did not change much from the previous example. The small deviation law is off, the isotherm change is catastrophic for its performance. The other rate laws produce the same results. This, however, does not imply they are the same law. They are simply equal at the chosen test conditions.
 
-![Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. $\text{log}_{10}(K_{\text{ex}})$ = 0.2, $CEC$ = 0.05 mol/kgw, $k_r$ = 0.1 m/s, $C^0_{\ce{Na+}}$ = $C_{\ce{Na+}}$ = 0.1 mol/kgw, $C^0_{\ce{Li+}}$ = 1 mol/kgw, $C_{\ce{Li+}}$ = 0.5 mol/kgw, Chloride concentration is obtained from charge balance.](../images/Large_deviation_different_isotherm.png){#fig-case4}
+![Comparison of three rate laws at large jump to a different isotherm. $\text{log}_{10}(K_{\text{ex}})$ = 0.2, $CEC$ = 0.05 mol/kgw, $k_r$ = 0.1 m/s, $C^0_{\ce{Na+}}$ = $C_{\ce{Na+}}$ = 0.1 mol/kgw, $C^0_{\ce{Li+}}$ = 1 mol/kgw, $C_{\ce{Li+}}$ = 0.5 mol/kgw, Chloride concentration is obtained from charge balance.](../images/Large_deviation_different_isotherm.png){#fig-case4}
 
 If you require the above rate expressions in activities, my contact details are in this [page](../about.qmd).

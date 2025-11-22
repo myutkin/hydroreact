@@ -259,7 +259,7 @@ Li_Na_lin_exch
 </section>
 <section id="full-kinetic-expression" class="level1">
 <h1>3. Full kinetic expression</h1>
-<p>Finally, we could use full rate expression obtaind directly from the equilibrium exchange constant. Again we seek an expression of the form <span class="math inline">\(\text{rate} = dS_{\ce{Li}}/dt = k_r (K^{\prime} C_{\ce{Li+}} - S_{\ce{Li}})\)</span>. From the equilibrium constant we obtain:</p>
+<p>Finally, we could use full rate expression obtained directly from the equilibrium exchange constant. Again we seek an expression of the form <span class="math inline">\(\text{rate} = dS_{\ce{Li}}/dt = k_r (K^{\prime} C_{\ce{Li+}} - S_{\ce{Li}})\)</span>. From the equilibrium constant we obtain:</p>
 <p><span class="math display">\[
 K^{\prime} = \cfrac{K_{\text{ex}} CEC}{(C_{\ce{Cl-}} + (K_{\text{ex}} - 1)C_{\ce{Li+}})}
 \]</span></p>
@@ -289,7 +289,7 @@ Li_Na_lin_exch
 </section>
 <section id="comparison-of-the-three-cases" class="level1">
 <h1>Comparison of the three cases</h1>
-<p>So, now it would make sense to compare performance of these rate laws using PHREEQC. However, there is one complication. PHREEQc actually uses activities instead of concentrations and above rate expressions are based on charge balance tied to <span class="math inline">\(C_{\ce{Cl-}}\)</span> molar concentration. Thus, above expressions have to be rederived in terms of activities. This excersize is left to the reader.</p>
+<p>So, now it would make sense to compare performance of these rate laws using PHREEQC. However, there is one complication. PHREEQC actually uses activities instead of concentrations and above rate expressions are based on charge balance tied to <span class="math inline">\(C_{\ce{Cl-}}\)</span> molar concentration. Thus, above expressions have to be rederived in terms of activities. This exercise is left to the reader.</p>
 <p>Below I compare the above three rate laws for the small equilibrium deviation along a constant adsorption isotherm, and for large deviations from equilibrium and isotherm jumping. All rates are computed in terms of activities.</p>
 <p><a href="#fig-case1" class="quarto-xref">Figure&nbsp;1</a> compares the three rates at small equilibrium deviation on the same isotherm. All rates law perform very well. The performance of the small deviation rate law is very good.</p>
 <div id="fig-case1" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -298,18 +298,18 @@ Li_Na_lin_exch
 <img src="../images/Small_deviation_constant_isotherm.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-case1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Cl-}}\)</span> = <span class="math inline">\(C_{\ce{Cl-}}\)</span> = 0.2 mol/kgw, <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.11 mol/kgw. Lithium concentration is obtained from charge balance.
+Figure&nbsp;1: Comparison of three rate laws at small deviation from equilibrium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Cl-}}\)</span> = <span class="math inline">\(C_{\ce{Cl-}}\)</span> = 0.2 mol/kgw, <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.11 mol/kgw. Lithium concentration is obtained from charge balance.
 </figcaption>
 </figure>
 </div>
-<p><a href="#fig-case2" class="quarto-xref">Figure&nbsp;2</a> compares the three rates at large equilibrium deviation on the same isotherm. The performance of the small deviation rate law is poor, it under estimates desorption because it esentially decays to a notably different equilibrium state. The other rate laws perform well although are distinct.</p>
+<p><a href="#fig-case2" class="quarto-xref">Figure&nbsp;2</a> compares the three rates at large equilibrium deviation on the same isotherm. The performance of the small deviation rate law is poor, it under estimates desorption because it essentially decays to a notably different equilibrium state. The other rate laws perform well although are distinct.</p>
 <div id="fig-case2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-case2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../images/Large_deviation_constant_isotherm.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-case2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Cl-}}\)</span> = <span class="math inline">\(C_{\ce{Cl-}}\)</span> = 0.2 mol/kgw, <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.15 mol/kgw. Lithium concentration is obtained from charge balance.
+Figure&nbsp;2: Comparison of three rate laws at large deviation from equilibrium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Cl-}}\)</span> = <span class="math inline">\(C_{\ce{Cl-}}\)</span> = 0.2 mol/kgw, <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.15 mol/kgw. Lithium concentration is obtained from charge balance.
 </figcaption>
 </figure>
 </div>
@@ -320,7 +320,7 @@ Figure&nbsp;2: Comparison of three rate laws at smal ldeviation from equilibtium
 <img src="../images/Small_deviation_different_isotherm.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-case3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Li+}}\)</span> = 1 mol/kgw, <span class="math inline">\(C_{\ce{Li+}}\)</span> = 0.9 mol/kgw, Chloride concentration is obtained from charge balance.
+Figure&nbsp;3: Comparison of three rate laws at small jump to a different isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Li+}}\)</span> = 1 mol/kgw, <span class="math inline">\(C_{\ce{Li+}}\)</span> = 0.9 mol/kgw, Chloride concentration is obtained from charge balance.
 </figcaption>
 </figure>
 </div>
@@ -331,7 +331,7 @@ Figure&nbsp;3: Comparison of three rate laws at smal ldeviation from equilibtium
 <img src="../images/Large_deviation_different_isotherm.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-case4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Comparison of three rate laws at smal ldeviation from equilibtium on the same isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Li+}}\)</span> = 1 mol/kgw, <span class="math inline">\(C_{\ce{Li+}}\)</span> = 0.5 mol/kgw, Chloride concentration is obtained from charge balance.
+Figure&nbsp;4: Comparison of three rate laws at large jump to a different isotherm. <span class="math inline">\(\text{log}_{10}(K_{\text{ex}})\)</span> = 0.2, <span class="math inline">\(CEC\)</span> = 0.05 mol/kgw, <span class="math inline">\(k_r\)</span> = 0.1 m/s, <span class="math inline">\(C^0_{\ce{Na+}}\)</span> = <span class="math inline">\(C_{\ce{Na+}}\)</span> = 0.1 mol/kgw, <span class="math inline">\(C^0_{\ce{Li+}}\)</span> = 1 mol/kgw, <span class="math inline">\(C_{\ce{Li+}}\)</span> = 0.5 mol/kgw, Chloride concentration is obtained from charge balance.
 </figcaption>
 </figure>
 </div>
