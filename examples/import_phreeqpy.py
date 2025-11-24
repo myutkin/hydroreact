@@ -13,13 +13,18 @@ def get_so(iph):
     return pd.DataFrame(out[1:], columns=out[0])
 
 #%%
-
-pc_input = """
+Na = 1
+Cl = 1
+#%%
+pc_input = f"""
 
 SELECTED_OUTPUT 1
 reset true
 
 SOLUTION 1
+pH 7 charge
+Na {Na}
+Cl {Cl}
 END
 """
 

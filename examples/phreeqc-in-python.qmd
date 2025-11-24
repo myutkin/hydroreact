@@ -3,6 +3,11 @@ title: "Use of Phreeqcpy package in python"
 page-layout: article
 ---
 
+This is a basic example of using PHREEQC as a module through phreeqpy package. Note the use of the f-string here, which puts a limit on the lowest python version that can be used with such constructions.
+
+The important caveat is that the values in the f-string are substituted linearly. Sometimes it is useful, sometime sit is not. If the variable in the f-string change and the string needs to be updated, a more convenient approach is to use `from string import Template
+` and then use the `Template` method `substitute`. All documentation is easily available online.
+
 ```python
 import phreeqpy.iphreeqc.phreeqc_dll as phreeqc_mod
 import pandas as pd
@@ -19,13 +24,18 @@ def get_so(iph):
     return pd.DataFrame(out[1:], columns=out[0])
 
 #%%
-
-pc_input = """
+Na = 1
+Cl = 1
+#%%
+pc_input = f"""
 
 SELECTED_OUTPUT 1
 reset true
 
 SOLUTION 1
+pH 7 charge
+Na {Na}
+Cl {Cl}
 END
 """
 
@@ -37,8 +47,8 @@ print(output)
 ```
 
 ```text
-sim   state  soln  dist_x  ...            mu  mass_H2O    charge(eq)   pct_err
-0    1  i_soln     1   -99.0  ...  1.006607e-07       1.0 -1.216515e-09 -0.604265
+   sim   state  soln  dist_x  ...     mu  mass_H2O    charge(eq)       pct_err
+0    1  i_soln     1   -99.0  ...  0.001       1.0 -2.080965e-17 -1.040374e-12
 
 [1 rows x 15 columns]
 ```
