@@ -11,7 +11,7 @@ toc-depth: 2
 - Examples presented here are considered advanced (i.e. you cannot simply copy-paste them). For basic examples check hydrochemistry.eu
 
 ## PHREEQC setup in Python
-1. Use of phreeqcpy package ([Open](examples/phreeqc-in-python.qmd))
+1. Use of phreeqpy package ([Open](examples/phreeqc-in-python.qmd))
 2. Enable DUMP instruction in phreeqcpy ([Open](examples/add-dump-phreeqcpy.qmd))
 
 

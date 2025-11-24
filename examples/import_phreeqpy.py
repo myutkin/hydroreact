@@ -1,9 +1,3 @@
----
-title: "Use of Phreeqcpy package in python"
-page-layout: article
----
-
-```python
 import phreeqpy.iphreeqc.phreeqc_dll as phreeqc_mod
 import pandas as pd
 
@@ -34,11 +28,3 @@ phc1.run_string(pc_input)
 output = get_so(phc1)
 
 print(output)
-```
-
-```text
-sim   state  soln  dist_x  ...            mu  mass_H2O    charge(eq)   pct_err
-0    1  i_soln     1   -99.0  ...  1.006607e-07       1.0 -1.216515e-09 -0.604265
-
-[1 rows x 15 columns]
-```

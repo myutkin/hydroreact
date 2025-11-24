@@ -1,13 +1,233 @@
 ---
-title: "Page not yet implemented"
+title: "Add `DUMP` functionality to phreeqpy"
 page-layout: article
 ---
+According to the manual phreeqpy exposes all available methods of PHREEQC module. However, method `GET_DUMP_STRING_LINES` and `DUMP` related methods are not available. But we know that `DUMP` instructions are very useful for exporting the exact state of a cell or exchanger, for example when computing transport outside of PHREEQC. Perhaps, I misread phreeqpy the documentation.
+Below is a vibe-coded modification of phreeqpy that correctly exposes methods related to `DUMP` instruction. I hardly take any credit here as the code was fully produced by ChatGPT.
 
-# Page not yet implemented
+The usage is explained below as well. A word of caution. Sometimes, it cases ipython kernel crash when you try accessing the `DUMP` string(s). This most likely means you forgot to put an `END` at the end of a simulation.
 
-## Work in progress
+```python
+# -*- coding: utf-8 -*-
+"""
+Overlay for phreeqpy.iphreeqc.phreeqc_dll that adds complete DUMP controls:
+- GetDumpFileOn / SetDumpFileOn
+- GetDumpStringOn / SetDumpStringOn
+- GetDumpStringLineCount / GetDumpStringLine
 
-This page is planned but not implemented yet.
+Usage (example):
+    from iphreeqc_dump_overlay import IPhreeqc
+    phc = IPhreeqc()  # or IPhreeqc(dll_path=".../libiphreeqc-*.so|dll|dylib")
+    phc.load_database("/path/to/phreeqc.dat")
+    phc.set_dump_file_on(False)       # disable writing to file
+    phc.set_dump_string_on(True)      # capture DUMP into string buffer
+    phc.run_string("SOLUTION 1; temp 25; pH 7; DUMP; -all; END")
+    print(phc.get_dump_string())      # entire dump as one string
 
-If you reached this page via a link, it means the example is on the roadmap but not ready yet.
+Run module as a script for a quick self-test:
+    python -m iphreeqc_dump_overlay --db /full/path/to/phreeqc.dat
+"""
 
+import ctypes
+import os
+import sys
+from ctypes import c_int, c_char_p
+
+# --- import base wrapper
+from phreeqpy.iphreeqc.phreeqc_dll import IPhreeqc as _BaseIPhreeqc  # noqa: E402
+
+
+def _default_lib_path_from_package():
+    """
+    Reproduce phreeqpy's platform-specific library selection,
+    but resolve path relative to the phreeqpy.iphreeqc package.
+    """
+    import phreeqpy.iphreeqc as iph_pkg
+    base = os.path.dirname(iph_pkg.__file__)
+    if sys.platform == "win32":
+        dll_name = "phreeqc3/IPhreeqc-3.7.3.dll"
+    elif sys.platform.startswith("linux"):
+        dll_name = "phreeqc3/libiphreeqc-3.7.3.so"
+    elif sys.platform == "darwin":
+        machine = os.uname()[-1]
+        if machine == "x86_64":
+            dll_name = "phreeqc3/libiphreeqc-3.7.3.dylib"
+        elif machine == "arm64":
+            dll_name = "phreeqc3/libiphreeqc-3.7.3-m1.dylib"
+        else:
+            raise NotImplementedError(f"Unsupported macOS arch: {machine}")
+    else:
+        raise NotImplementedError(f"Unsupported platform: {sys.platform}")
+    return os.path.join(base, dll_name)
+
+
+class IPhreeqc(_BaseIPhreeqc):
+    """
+    Subclass that adds DUMP-related method bindings via ctypes.
+
+    Notes on binding:
+    - C API returns/accepts int for on/off switches; we convert to bool in Python.
+    - Line accessors return const char*; ctypes maps that as c_char_p.
+    """
+
+    def __init__(self, dll_path=None):
+        # Initialize base class (loads the library for its own symbols)
+        super().__init__(dll_path=dll_path)
+
+        # We bind needed symbols ourselves, using the same library file path
+        # resolution logic as phreeqpy, unless caller provided dll_path.
+        if dll_path is None:
+            dll_path = _default_lib_path_from_package()
+
+        lib = ctypes.cdll.LoadLibrary(dll_path)
+
+        # ---- Dump file switch
+        self._get_dump_file_on = lib.GetDumpFileOn
+        self._get_dump_file_on.argtypes = [c_int]
+        self._get_dump_file_on.restype = c_int
+
+        self._set_dump_file_on = lib.SetDumpFileOn
+        self._set_dump_file_on.argtypes = [c_int, c_int]
+        self._set_dump_file_on.restype = c_int
+
+        # ---- Dump string switch
+        self._get_dump_string_on = lib.GetDumpStringOn
+        self._get_dump_string_on.argtypes = [c_int]
+        self._get_dump_string_on.restype = c_int
+
+        self._set_dump_string_on = lib.SetDumpStringOn
+        self._set_dump_string_on.argtypes = [c_int, c_int]
+        self._set_dump_string_on.restype = c_int
+
+        # ---- Dump string accessors
+        self._get_dump_string_line_count = lib.GetDumpStringLineCount
+        self._get_dump_string_line_count.argtypes = [c_int]
+        self._get_dump_string_line_count.restype = c_int
+
+        self._get_dump_string_line = lib.GetDumpStringLine
+        self._get_dump_string_line.argtypes = [c_int, c_int]
+        self._get_dump_string_line.restype = c_char_p
+
+    # ---------------------------
+    # Python-friendly wrappers
+    # ---------------------------
+
+    # File on/off (writes to dump file on disk)
+    def get_dump_file_on(self) -> bool:
+        """True if writing to the DUMP file is enabled."""
+        return bool(self._get_dump_file_on(self.id_))
+
+    def set_dump_file_on(self, on: bool = True):
+        """Enable/disable writing to the DUMP file."""
+        err = self._set_dump_file_on(self.id_, 1 if on else 0)
+        if err < 0:
+            self.raise_ipq_error(err)
+
+    # String on/off (captures DUMP into an internal string buffer)
+    def get_dump_string_on(self) -> bool:
+        """True if capturing DUMP to an internal string buffer is enabled."""
+        return bool(self._get_dump_string_on(self.id_))
+
+    def set_dump_string_on(self, on: bool = True):
+        """Enable/disable capturing DUMP into a string buffer."""
+        err = self._set_dump_string_on(self.id_, 1 if on else 0)
+        if err < 0:
+            self.raise_ipq_error(err)
+
+    # Access DUMP string contents
+    def get_dump_string_line_count(self) -> int:
+        """Number of lines currently stored in the DUMP string buffer."""
+        return int(self._get_dump_string_line_count(self.id_))
+
+    def get_dump_string_line(self, n: int) -> str:
+        """Return one line (0-based) from the DUMP string buffer."""
+        b = self._get_dump_string_line(self.id_, int(n))
+        return "" if not b else b.decode("utf-8")
+
+    def get_dump_string_lines(self) -> list[str]:
+        """Return the entire DUMP buffer as a list of lines."""
+        cnt = self.get_dump_string_line_count()
+        return [self.get_dump_string_line(i) for i in range(cnt)]
+
+    def get_dump_string(self) -> str:
+        """Return the entire DUMP buffer as a single string."""
+        return "\n".join(self.get_dump_string_lines())
+
+    # ---------------------------
+    # Quick self-test / debug aid
+    # ---------------------------
+
+    def _self_test_dump(self, database_path: str) -> None:
+        """
+        Minimal end-to-end test:
+        - loads database
+        - enables string capture
+        - runs a tiny input with DUMP
+        - checks that DUMP buffer contains content
+        """
+        if not os.path.exists(database_path):
+            raise FileNotFoundError(f"Database not found: {database_path}")
+
+        # Ensure clean state
+        self.set_dump_file_on(False)
+        self.set_dump_string_on(False)
+
+        # Load DB
+        self.load_database(database_path)
+        if self.phc_database_error_count != 0:
+            raise RuntimeError("Database load reported errors:\n" + self.get_error_string())
+
+        # Turn on DUMP-to-string capture
+        self.set_dump_string_on(True)
+
+        # Simple input that triggers a DUMP block
+        inp = (
+            "SOLUTION 1\n"
+            "    temp 25\n"
+            "    pH 7 charge\n"
+            "DUMP\n"
+            "    -all\n"
+            "END\n"
+        )
+        self.run_string(inp)
+
+        # Validate that we got something back
+        line_count = self.get_dump_string_line_count()
+        assert line_count >= 1, "DUMP buffer is empty; expected at least one line."
+        # Spot-check a few first lines for plausibility (not strict, just helpful)
+        first = self.get_dump_string_line(0)
+        if not isinstance(first, str):
+            raise AssertionError("DUMP line is not a string")
+        # Optional: print a short preview
+        preview = "\n".join(self.get_dump_string_lines()[:5])
+        print("[iphreeqc_dump_overlay] DUMP preview (first lines):\n", preview)
+
+
+# ---------------------------
+# CLI for quick validation
+# ---------------------------
+
+def _main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Quick DUMP overlay self-test.")
+    parser.add_argument(
+        "--db",
+        required=True,
+        help="Full path to phreeqc.dat (or another PHREEQC database).",
+    )
+    parser.add_argument(
+        "--dll",
+        default=None,
+        help="Optional full path to libiphreeqc shared library; "
+             "if omitted, platform default from phreeqpy package is used.",
+    )
+    args = parser.parse_args()
+
+    iph = IPhreeqc(dll_path=args.dll)
+    iph._self_test_dump(args.db)
+    print("[iphreeqc_dump_overlay] OK")
+
+if __name__ == "__main__":
+    _main()
+```
