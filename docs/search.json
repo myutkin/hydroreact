@@ -35,11 +35,11 @@
     "text": "This note compares a typical PHREEQC transport input and a porosity-aware input."
   },
   {
-    "objectID": "examples/phreeqc-transport-right-input.html#model-dimensions-inferred-from-the-input",
-    "href": "examples/phreeqc-transport-right-input.html#model-dimensions-inferred-from-the-input",
+    "objectID": "examples/phreeqc-transport-right-input.html#model-dimensions",
+    "href": "examples/phreeqc-transport-right-input.html#model-dimensions",
     "title": "PHREEQC Transport Input: Getting Porosity Scaling Right",
-    "section": "Model dimensions inferred from the input",
-    "text": "Model dimensions inferred from the input\n\nNumber of cells: 20\nCell length: 0.0038 m (3.8 mm)\nTotal length: 0.076 m (7.6 cm)\nPorosity: 0.2\nPorosity-aware pore water per cell: 0.000866469789 kg (~0.866 mL)\nTotal pore water in the domain: ~0.01733 L\n\nPorosity is represented through explicit -water and matching inventory scaling (minerals/exchanger), instead of relying on PHREEQC default water mass."
+    "section": "Model dimensions",
+    "text": "Model dimensions\n\nNumber of cells: 20\nCell length: 0.0038 m (3.8 mm)\nTotal length: 0.076 m (7.6 cm)\nPorosity: 0.2\nPorosity-aware pore water per cell: 0.000866469789 kg (~0.866 mL)\nTotal pore water in the domain: ~0.01733 L\n\nPorosity is represented through explicit -water and matching inventory scaling (minerals/exchanger), instead of relying on PHREEQC default water mass."
   },
   {
     "objectID": "examples/phreeqc-transport-right-input.html#typical-setup-easy-to-run-wrong-for-porosity-driven-rock-volume-effects",

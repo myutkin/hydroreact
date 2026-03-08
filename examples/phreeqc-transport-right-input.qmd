@@ -5,7 +5,7 @@ page-layout: article
 
 This note compares a typical PHREEQC transport input and a porosity-aware input.
 
-## Model dimensions inferred from the input
+## Model dimensions
 
 - Number of cells: 20
 - Cell length: 0.0038 m (3.8 mm)
