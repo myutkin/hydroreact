@@ -22,4 +22,5 @@ toc-depth: 2
 4. Mass-transfer limited non-linear ion-exchange kinetics ([Open](examples/mass-transfer-non-linear-ion-exchange-kinetics.qmd))
 
 ## Transport modeling with PHREEQC
-1. Tracer breakthrough modeling and validation  ([Open](examples/tracer-breakthrough.qmd))
+1. PHREEQC transport input with correct porosity scaling ([Open](examples/phreeqc-transport-right-input.qmd))
+2. Tracer breakthrough modeling and validation  ([Open](examples/tracer-breakthrough.qmd))

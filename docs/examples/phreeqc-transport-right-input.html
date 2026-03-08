@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Page not yet implemented – HydroReact</title>
+<title>PHREEQC Transport Input: Getting Porosity Scaling Right – HydroReact</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -115,10 +115,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#page-not-yet-implemented" id="toc-page-not-yet-implemented" class="nav-link active" data-scroll-target="#page-not-yet-implemented">Page not yet implemented</a>
-  <ul class="collapse">
-  <li><a href="#work-in-progress" id="toc-work-in-progress" class="nav-link" data-scroll-target="#work-in-progress">Work in progress</a></li>
-  </ul></li>
+  <li><a href="#model-dimensions-inferred-from-the-input" id="toc-model-dimensions-inferred-from-the-input" class="nav-link active" data-scroll-target="#model-dimensions-inferred-from-the-input">Model dimensions inferred from the input</a></li>
+  <li><a href="#typical-setup-easy-to-run-wrong-for-porosity-driven-rock-volume-effects" id="toc-typical-setup-easy-to-run-wrong-for-porosity-driven-rock-volume-effects" class="nav-link" data-scroll-target="#typical-setup-easy-to-run-wrong-for-porosity-driven-rock-volume-effects">Typical setup (easy to run, wrong for porosity-driven rock-volume effects)</a></li>
+  <li><a href="#porosity-aware-setup-recommended" id="toc-porosity-aware-setup-recommended" class="nav-link" data-scroll-target="#porosity-aware-setup-recommended">Porosity-aware setup (recommended)</a></li>
+  <li><a href="#figures-placeholders" id="toc-figures-placeholders" class="nav-link" data-scroll-target="#figures-placeholders">Figures (placeholders)</a></li>
   </ul>
 </nav>
     </div>
@@ -127,7 +127,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Page not yet implemented</h1>
+<h1 class="title">PHREEQC Transport Input: Getting Porosity Scaling Right</h1>
 </div>
 
 
@@ -144,15 +144,195 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="page-not-yet-implemented" class="level1">
-<h1>Page not yet implemented</h1>
-<section id="work-in-progress" class="level2">
-<h2 class="anchored" data-anchor-id="work-in-progress">Work in progress</h2>
-<p>This page is planned but not implemented yet.</p>
-<p>If you reached this page via a link, it means the example is on the roadmap but not ready yet.</p>
-
-
+<p>This note compares a typical PHREEQC transport input and a porosity-aware input.</p>
+<section id="model-dimensions-inferred-from-the-input" class="level2">
+<h2 class="anchored" data-anchor-id="model-dimensions-inferred-from-the-input">Model dimensions inferred from the input</h2>
+<ul>
+<li>Number of cells: 20</li>
+<li>Cell length: 0.0038 m (3.8 mm)</li>
+<li>Total length: 0.076 m (7.6 cm)</li>
+<li>Porosity: 0.2</li>
+<li>Porosity-aware pore water per cell: 0.000866469789 kg (~0.866 mL)</li>
+<li>Total pore water in the domain: ~0.01733 L</li>
+</ul>
+<p>Porosity is represented through explicit <code>-water</code> and matching inventory scaling (minerals/exchanger), instead of relying on PHREEQC default water mass.</p>
 </section>
+<section id="typical-setup-easy-to-run-wrong-for-porosity-driven-rock-volume-effects" class="level2">
+<h2 class="anchored" data-anchor-id="typical-setup-easy-to-run-wrong-for-porosity-driven-rock-volume-effects">Typical setup (easy to run, wrong for porosity-driven rock-volume effects)</h2>
+<pre class="text"><code>SELECTED_OUTPUT 1
+  -reset true
+  -molalities Ca+2 Na+ Cl- K+ Mg+2 NaZ CaZ2
+  -activities Ca+2 Na+ Cl- K+ Mg+2 NaZ CaZ2
+
+  -saturation_indices Calcite
+  -equilibrium_phases Calcite
+
+EXCHANGE_MASTER_SPECIES
+  Z Z-
+
+EXCHANGE_SPECIES
+# note, the exchange reactions do not include all of those in https://10.1016/j.fuel.2022.125350
+# only major effects are considered, which is enough to replicated the graphs with great accuracy
+  Z- = Z- ; log_k 0
+
+  Z- + Na+ = NaZ
+  log_k 0
+
+  2Z- + Ca+2 = CaZ2
+  log_k 0.77
+
+
+SOLUTION 1000 Initial
+units ppm
+pH 7
+Na 10822
+Ca 402
+K 90
+Mg 49
+Cl 17924 charge
+
+EQUILIBRIUM_PHASES 1000
+  Calcite 0 1
+
+SAVE SOLUTION 1000
+COPY SOLUTION 1000 1-20
+END
+
+SOLUTION 0 Injection
+units ppm
+pH 7
+Na 373
+Ca 14
+K 3.1
+Mg 1.7
+Cl 607.7 charge
+
+EQUILIBRIUM_PHASES 0
+CO2(g) -3.5 10
+END
+
+EQUILIBRIUM_PHASES 1-20
+  Calcite 0 10
+
+EXCHANGE 1-20
+  -equil 1000
+  Z 9e-3
+
+TRANSPORT
+  -initial_time 1000
+  -time_step 30.0
+  -boundary_conditions flux flux
+  -dispersivities 20*1e-06
+  -correct_disp true
+  -diffusion_coefficient 0
+  -cells 20
+  -shifts 80
+  -length 20*0.0038
+  -punch_cells 1-20
+  -punch_frequency 1
+  -print_cells 20
+END</code></pre>
+</section>
+<section id="porosity-aware-setup-recommended" class="level2">
+<h2 class="anchored" data-anchor-id="porosity-aware-setup-recommended">Porosity-aware setup (recommended)</h2>
+<pre class="text"><code>SELECTED_OUTPUT 1
+  -reset true
+  -molalities Ca+2 Na+ Cl- K+ Mg+2 NaZ CaZ2
+  -activities Ca+2 Na+ Cl- K+ Mg+2 NaZ CaZ2
+
+  -saturation_indices Calcite
+  -equilibrium_phases Calcite
+
+EXCHANGE_MASTER_SPECIES
+  Z Z-
+
+EXCHANGE_SPECIES
+  Z- = Z- ; log_k 0
+
+  Z- + Na+ = NaZ
+  log_k 0
+
+  2Z- + Ca+2 = CaZ2
+  log_k 0.77
+
+SOLUTION 1000 Initial
+  -water 0.000866469789256721 kg
+units ppm
+pH 7
+Na 10822
+Ca 402
+K 90
+Mg 49
+Cl 17924 charge
+
+EQUILIBRIUM_PHASES 1000
+  Calcite 0 1
+
+SAVE SOLUTION 1000
+COPY SOLUTION 1000 1-20
+END
+
+SOLUTION 0 Injection
+  -water 0.000866469789256721 kg
+units ppm
+pH 7
+Na 373
+Ca 14
+K 3.1
+Mg 1.7
+Cl 607.7 charge
+
+EQUILIBRIUM_PHASES 0
+CO2(g) -3.5 10
+END
+
+EQUILIBRIUM_PHASES 1-20
+  Calcite 0 0.09184579766121242
+
+EXCHANGE 1-20
+  -equil 1000
+  Z 7.798228103310489e-06
+
+TRANSPORT
+  -initial_time 1000
+  -time_step 30.0
+  -boundary_conditions flux flux
+  -dispersivities 20*1e-06
+  -correct_disp true
+  -diffusion_coefficient 0
+  -cells 20
+  -shifts 80
+  -length 20*0.0038
+  -punch_cells 1-20
+  -punch_frequency 1
+  -print_cells 20
+END</code></pre>
+<p>In most cases the first setup is applicable, but fails in certain use cases. The first setup can reproduce published curves (e.g., <a href="https://doi.org/10.1016/j.fuel.2022.125350">Fuel 2022 study</a>), but it mis-scales porosity-sensitive mineral/exchanger effects resulting in vast overestimation of mineral dissolution, contradicting all experimental observations. The second setup is the corrected version. Essentially, graphs look identical, and the only difference is the scale of the y-axis, which constitutes a factor of 1000.</p>
+</section>
+<section id="figures-placeholders" class="level2">
+<h2 class="anchored" data-anchor-id="figures-placeholders">Figures (placeholders)</h2>
+<div id="fig-no-porosity" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-no-porosity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../images/transport-no-porosity.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-no-porosity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Typical porosity-unaware input
+</figcaption>
+</figure>
+</div>
+<div id="fig-porosity" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-porosity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../images/transport-porosity.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-porosity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Porosity aware input
+</figcaption>
+</figure>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
