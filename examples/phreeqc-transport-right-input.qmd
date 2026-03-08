@@ -172,7 +172,7 @@ END
 ```
 In most cases the first setup is applicable, but fails in certain use cases. The first setup can reproduce published curves (e.g., [Fuel 2022 study](https://doi.org/10.1016/j.fuel.2022.125350)), but it mis-scales porosity-sensitive mineral/exchanger effects resulting in vast overestimation of mineral dissolution, contradicting all experimental observations. The second setup is the corrected version. Essentially, graphs look identical, and the only difference is the scale of the y-axis, which constitutes a factor of 1000.
 
-## Figures (placeholders)
+## Figures
 
 ![Typical porosity-unaware input](../images/transport-no-porosity.png){#fig-no-porosity}
 

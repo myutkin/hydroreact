@@ -56,11 +56,11 @@
     "text": "Porosity-aware setup (recommended)\nSELECTED_OUTPUT 1\n  -reset true\n  -molalities Ca+2 Na+ Cl- K+ Mg+2 NaZ CaZ2\n  -activities Ca+2 Na+ Cl- K+ Mg+2 NaZ CaZ2\n\n  -saturation_indices Calcite\n  -equilibrium_phases Calcite\n\nEXCHANGE_MASTER_SPECIES\n  Z Z-\n\nEXCHANGE_SPECIES\n  Z- = Z- ; log_k 0\n\n  Z- + Na+ = NaZ\n  log_k 0\n\n  2Z- + Ca+2 = CaZ2\n  log_k 0.77\n\nSOLUTION 1000 Initial\n  -water 0.000866469789256721 kg\nunits ppm\npH 7\nNa 10822\nCa 402\nK 90\nMg 49\nCl 17924 charge\n\nEQUILIBRIUM_PHASES 1000\n  Calcite 0 1\n\nSAVE SOLUTION 1000\nCOPY SOLUTION 1000 1-20\nEND\n\nSOLUTION 0 Injection\n  -water 0.000866469789256721 kg\nunits ppm\npH 7\nNa 373\nCa 14\nK 3.1\nMg 1.7\nCl 607.7 charge\n\nEQUILIBRIUM_PHASES 0\nCO2(g) -3.5 10\nEND\n\nEQUILIBRIUM_PHASES 1-20\n  Calcite 0 0.09184579766121242\n\nEXCHANGE 1-20\n  -equil 1000\n  Z 7.798228103310489e-06\n\nTRANSPORT\n  -initial_time 1000\n  -time_step 30.0\n  -boundary_conditions flux flux\n  -dispersivities 20*1e-06\n  -correct_disp true\n  -diffusion_coefficient 0\n  -cells 20\n  -shifts 80\n  -length 20*0.0038\n  -punch_cells 1-20\n  -punch_frequency 1\n  -print_cells 20\nEND\nIn most cases the first setup is applicable, but fails in certain use cases. The first setup can reproduce published curves (e.g., Fuel 2022 study), but it mis-scales porosity-sensitive mineral/exchanger effects resulting in vast overestimation of mineral dissolution, contradicting all experimental observations. The second setup is the corrected version. Essentially, graphs look identical, and the only difference is the scale of the y-axis, which constitutes a factor of 1000."
   },
   {
-    "objectID": "examples/phreeqc-transport-right-input.html#figures-placeholders",
-    "href": "examples/phreeqc-transport-right-input.html#figures-placeholders",
+    "objectID": "examples/phreeqc-transport-right-input.html#figures",
+    "href": "examples/phreeqc-transport-right-input.html#figures",
     "title": "PHREEQC Transport Input: Getting Porosity Scaling Right",
-    "section": "Figures (placeholders)",
-    "text": "Figures (placeholders)\n\n\n\n\n\n\nFigure 1: Typical porosity-unaware input\n\n\n\n\n\n\n\n\n\nFigure 2: Porosity aware input"
+    "section": "Figures",
+    "text": "Figures\n\n\n\n\n\n\nFigure 1: Typical porosity-unaware input\n\n\n\n\n\n\n\n\n\nFigure 2: Porosity aware input"
   },
   {
     "objectID": "examples/non-linear-ion-exchange-kinetics.html",
